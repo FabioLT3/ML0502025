@@ -1,0 +1,390 @@
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, Arial, sans-serif;
+    background: #1a1a1a;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+#container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    cursor: grab;
+}
+
+#container:active {
+    cursor: grabbing;
+}
+
+#canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid #333;
+    width: 100%;
+    height: 100%;
+}
+
+/* Selector de mapas - Optimizado para móvil */
+#mapSelector {
+    position: absolute;
+    top: env(safe-area-inset-top, 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2A2A2A;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: white;
+    z-index: 100;
+    font-size: clamp(12px, 3.5vw, 14px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    width: calc(100vw - 20px);
+    max-width: 400px;
+    min-height: 60px;
+}
+
+#mapSelector label {
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+    font-size: clamp(11px, 3vw, 13px);
+}
+
+#mapSelect {
+    background: #2A66F5;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: clamp(12px, 3.5vw, 14px);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+#mapSelect:hover {
+    background-color: #1e52d1;
+}
+
+#mapSelect:focus {
+    box-shadow: 0 0 0 3px rgba(42, 102, 245, 0.3);
+}
+
+/* Controles - Optimizado para móvil */
+#controls {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background: none;
+    padding: 12px;
+    border-radius: 12px;
+    z-index: 100;
+    box-shadow: none;
+    font-size: clamp(12px, 3vw, 14px);
+    flex-direction: column;
+    gap: 16px; /* Más separación vertical entre botones */
+    width: 20vw;
+    max-width: 220px;
+    align-items: stretch;
+}
+
+#controls .ctrls {
+    width: 10vw;
+    height: 6vh;
+    margin-bottom: 3vh;
+}
+
+#controls .ctrls:last-child {
+    margin-bottom: 0;
+}
+
+button {
+    background: #2A66F5;
+    color: white;
+    border: none;
+    padding: 14px 12px;
+    margin: 0; /* Elimina cualquier margen lateral */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: clamp(11px, 3vw, 13px);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    min-height: 48px;
+    touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+}
+
+button:hover {
+    background: #1e52d1;
+}
+
+button:active {
+    transform: scale(0.96);
+    background: #1a47b8;
+}
+
+/* Información - Optimizada para móvil */
+#info {
+    position: absolute;
+    bottom: env(safe-area-inset-bottom, 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2A2A2A;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: white;
+    font-size: clamp(10px, 2.5vw, 12px);
+    z-index: 100;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    width: calc(100vw - 20px);
+    max-width: 400px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+#loadingMessage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: clamp(16px, 4vw, 20px);
+    text-align: center;
+    z-index: 200;
+    padding: 0 20px;
+    font-weight: 500;
+}
+
+/* Tablets en orientación vertical */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    #mapSelector {
+        max-width: 500px;
+        padding: 16px 20px;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        min-height: auto;
+    }
+
+    #mapSelector label {
+        white-space: nowrap;
+    }
+
+    #mapSelect {
+        max-width: none;
+        flex: 1;
+        padding: 14px 20px;
+    }
+
+    #controls {
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        max-width: 300px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    button {
+        padding: 16px 14px;
+        min-height: 52px;
+    }
+
+    #info {
+        max-width: 500px;
+        padding: 14px 20px;
+    }
+}
+
+/* Pantallas grandes - Desktop */
+@media screen and (min-width: 769px) {
+    #mapSelector {
+        top: 20px;
+        max-width: 600px;
+        padding: 16px 24px;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        min-height: auto;
+    }
+
+    #mapSelect {
+        max-width: 300px;
+        padding: 12px 16px;
+    }
+
+    #controls {
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        max-width: 300px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    button {
+        padding: 14px 16px;
+        min-height: 48px;
+    }
+
+    #info {
+        bottom: 20px;
+        left: 20px;
+        transform: none;
+        max-width: 300px;
+        text-align: left;
+    }
+
+    /* Hover effects only on desktop */
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(42, 102, 245, 0.3);
+    }
+}
+
+/* Orientación horizontal en móviles */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    #mapSelector {
+        top: 5px;
+        left: 10px;
+        transform: none;
+        max-width: 300px;
+        padding: 8px 12px;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        width: auto;
+    }
+
+    #mapSelect {
+        max-width: 180px;
+        padding: 8px 12px;
+    }
+
+    #controls {
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        max-width: 250px;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    button {
+        padding: 10px 8px;
+        min-height: 40px;
+        font-size: 11px;
+    }
+
+    #info {
+        bottom: 5px;
+        left: 10px;
+        transform: none;
+        max-width: 250px;
+        padding: 8px 12px;
+        text-align: left;
+        width: auto;
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media screen and (max-width: 360px) {
+    #mapSelector {
+        padding: 10px 12px;
+        gap: 6px;
+    }
+
+    #controls {
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        padding: 10px;
+        gap: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    button {
+        padding: 12px 8px;
+        min-height: 44px;
+        font-size: 11px;
+    }
+
+    #info {
+        padding: 10px 12px;
+    }
+}
+
+/* Accesibilidad y mejoras adicionales */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Mejoras para dispositivos táctiles */
+@media (hover: none) and (pointer: coarse) {
+    button {
+        min-height: 48px;
+    }
+    
+    #mapSelect {
+        min-height: 48px;
+    }
+}
+
+/* Dark mode support si el sistema lo prefiere */
+@media (prefers-color-scheme: dark) {
+    /* Los colores ya están optimizados para modo oscuro */
+}
