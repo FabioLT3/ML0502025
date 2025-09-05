@@ -129,99 +129,32 @@ class AdminSystem {
     bindAdminEvents() {
         // Evento para abrir modal al hacer clic en el canvas
         this.navigator.canvas.addEventListener('click', (e) => {
-            const rect = this.navigator.canvas.getBoundingClientRect();
-            const x = Math.round((e.clientX - rect.left - this.navigator.offsetX) / this.navigator.scale);
-            const y = Math.round((e.clientY - rect.top - this.navigator.offsetY) / this.navigator.scale);
-            
-            // Verificar si se hizo clic en un punto existente
-            const clickedPoint = this.findPointAtCoordinates(e.clientX - rect.left, e.clientY - rect.top);
-            if (clickedPoint) {
-                if (this.isAdminMode) {
-                    this.editPoint(clickedPoint);
-                } else {
-                    // En modo visitante, mostrar información del punto
-                    this.showPointPresentation(clickedPoint);
-                }
-            } else if (this.isAdminMode) {
-                // Solo agregar nuevo punto en modo admin
-                this.showAddPointModal(x, y);
-            }
+            this.handleInteraction(e);
         });
-
-        // Eventos del modal
-        const modal = document.getElementById('adminModal');
-        const closeBtn = document.querySelector('.admin-close');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const deleteBtn = document.getElementById('deleteBtn');
-        const form = document.getElementById('pointForm');
-        const adminToggle = document.getElementById('adminToggle');
-        const exportBtn = document.getElementById('exportBtn');
-        const importBtn = document.getElementById('importBtn');
-        const importInput = document.getElementById('importInput');
-
-        closeBtn.onclick = () => this.hideModal();
-        cancelBtn.onclick = () => this.hideModal();
-        deleteBtn.onclick = () => this.deleteCurrentPoint();
-        adminToggle.onclick = () => this.toggleAdminMode();
-        exportBtn.onclick = () => this.exportData();
-        importBtn.onclick = () => importInput.click();
-        importInput.onchange = (e) => this.importData(e);
-
-        // Evento del formulario
-        form.onsubmit = (e) => {
+        
+        this.navigator.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
-            this.savePoint();
-        };
-
-        // Eventos de calificación por estrellas
-        document.querySelectorAll('.star').forEach(star => {
-            star.addEventListener('click', (e) => {
-                const rating = parseInt(e.target.dataset.rating);
-                this.setRating(rating);
-            });
+            const touch = e.changedTouches[0];
+            this.handleInteraction(touch);
         });
+    }
 
-        // Evento para subir imágenes
-        const imageInput = document.getElementById('images');
-        imageInput.addEventListener('change', (e) => {
-            this.handleImageUpload(e);
-        });
-
-        // Previsualización de imagen
-        document.getElementById('profileImage').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            const preview = document.getElementById('imagePreview');
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    preview.style.display = 'block';
-                    preview.innerHTML = `<img src="${e.target.result}" alt="Vista previa">`;
-                };
-                reader.readAsDataURL(file);
+    handleInteraction(event) {
+        const rect = this.navigator.canvas.getBoundingClientRect();
+        const x = Math.round((event.clientX - rect.left - this.navigator.offsetX) / this.navigator.scale);
+        const y = Math.round((event.clientY - rect.top - this.navigator.offsetY) / this.navigator.scale);
+        
+        const clickedPoint = this.findPointAtCoordinates(event.clientX - rect.left, event.clientY - rect.top);
+        
+        if (clickedPoint) {
+            if (this.isAdminMode) {
+                this.editPoint(clickedPoint);
             } else {
-                preview.style.display = 'none';
-                preview.innerHTML = '';
+                this.showPointPresentation(clickedPoint);
             }
-        });
-
-        // Cerrar modal al hacer clic fuera
-        window.onclick = (e) => {
-            if (e.target === modal) {
-                this.hideModal();
-            }
-        };
-
-        // Evento para editar puntos existentes
-        document.addEventListener('click', (e) => {
-            if (this.isAdminMode && e.target.closest('.map-point')) {
-                const pointId = e.target.closest('.map-point').dataset.pointId;
-                const point = this.points.find(p => p.id === pointId);
-                if (point) {
-                    this.editPoint(point);
-                }
-            }
-        });
+        } else if (this.isAdminMode) {
+            this.showAddPointModal(x, y);
+        }
     }
 
     checkAdminCode(code) {

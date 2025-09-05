@@ -67,51 +67,36 @@ class ImageMapNavigator {
         container.addEventListener('mousemove', (e) => this.drag(e));
         container.addEventListener('mouseup', () => this.endDrag());
         container.addEventListener('mouseleave', () => this.endDrag());
-        container.addEventListener('wheel', (e) => this.handleWheel(e));
         
-        // Touch events mejorados para dispositivos móviles
+        // Touch events mejorados
         container.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (e.touches.length === 1) {
-                this.startDrag(e.touches[0]);
-            } else if (e.touches.length === 2) {
-                this.startPinch(e.touches);
-            }
-        });
+            e.preventDefault(); // Prevenir comportamiento por defecto
+            const touch = e.touches[0];
+            this.startDrag({
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+        }, { passive: false });
         
         container.addEventListener('touchmove', (e) => {
             e.preventDefault();
-            if (e.touches.length === 1 && this.isDragging) {
-                this.drag(e.touches[0]);
-            } else if (e.touches.length === 2 && this.isPinching) {
-                this.handlePinch(e.touches);
-            }
-        });
+            const touch = e.touches[0];
+            this.drag({
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+        }, { passive: false });
         
-        container.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            if (e.touches.length === 0) {
-                this.endDrag();
-                this.endPinch();
-            } else if (e.touches.length === 1 && this.isPinching) {
-                this.endPinch();
-                this.startDrag(e.touches[0]);
-            }
+        container.addEventListener('touchend', () => {
+            this.endDrag();
         });
-        
-        // Resize con debounce para mejor rendimiento
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => this.handleResize(), 100);
-        });
-        
-        // Prevenir zoom del navegador en dispositivos móviles
-        document.addEventListener('touchstart', (e) => {
+
+        // Prevenir zoom del navegador en móviles
+        document.addEventListener('touchmove', (e) => {
             if (e.touches.length > 1) {
                 e.preventDefault();
             }
-        });
+        }, { passive: false });
         
         // Prevenir scroll en dispositivos móviles
         document.addEventListener('touchmove', (e) => {

@@ -26,6 +26,10 @@ body {
     height: 100vh;
     overflow: hidden;
     cursor: grab;
+    touch-action: none; /* Prevenir gestos del navegador */
+    -webkit-touch-callout: none; /* Prevenir menú contextual en iOS */
+    -webkit-user-select: none; /* Prevenir selección de texto */
+    -webkit-tap-highlight-color: transparent; /* Eliminar highlight al tocar */
 }
 
 #container:active {
